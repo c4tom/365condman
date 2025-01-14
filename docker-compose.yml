@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:6.4-php8.0-apache
+    container_name: 365condman-wordpress
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_secret
+      WORDPRESS_DB_NAME: 365condman_db
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG', true);
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        ini_set('display_errors', 0);
+    volumes:
+      - ./:/var/www/html/wp-content/plugins/365condman
+      - wp-data:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - 365condman_network
+
+  db:
+    image: mysql:5.7
+    container_name: 365condman-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: 365condman_db
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_secret
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - 365condman_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: 365condman-phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - 365condman_network
+
+  composer:
+    image: composer:2.6
+    container_name: 365condman-composer
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: composer install
+
+  phpunit:
+    image: php:8.0-cli
+    container_name: 365condman-phpunit
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        apt-get update && apt-get install -y \
+        git \
+        unzip \
+        && curl -sSLo phpunit.phar https://phar.phpunit.de/phpunit.phar \
+        && chmod +x phpunit.phar \
+        && mv phpunit.phar /usr/local/bin/phpunit \
+        && phpunit
+
+volumes:
+  wp-data:
+  db-data:
+
+networks:
+  365condman_network:
+    driver: bridge

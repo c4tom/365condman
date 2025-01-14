@@ -1,0 +1,38 @@
+{
+    "name": "365 Cond Man WordPress Plugin",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "wordpress",
+    "workspaceFolder": "/var/www/html/wp-content/plugins/365condman",
+    
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "felixfbecker.php-debug",
+                "bmewburn.vscode-intelephense-client",
+                "junstyle.php-cs-fixer",
+                "evilz.vscode-markdownlint"
+            ],
+            "settings": {
+                "php.validate.enable": true,
+                "php.validate.run": "onType",
+                "php.suggest.basic": true,
+                "phpcs.standard": "WordPress",
+                "phpunit.php.executablePath": "/usr/local/bin/php",
+                "phpunit.executablePath": "/usr/local/bin/phpunit"
+            }
+        }
+    },
+
+    "postCreateCommand": "composer install && chmod +x ./scripts/setup.sh && ./scripts/setup.sh",
+
+    "remoteUser": "www-data",
+
+    "features": {
+        "ghcr.io/devcontainers/features/php:1": {
+            "version": "8.0"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }
+    }
+}

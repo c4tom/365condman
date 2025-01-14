@@ -1,0 +1,36 @@
+# Composer
+/vendor/
+composer.phar
+composer.lock
+
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/plugins/
+wp-content/mu-plugins/
+wp-content/themes/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+debug.log
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Testes
+/coverage/
+
+# Ambiente Docker
+.env
+docker-compose.override.yml
+
+# Segurança
+*.key
+*.pem
