@@ -1,0 +1,31 @@
+unit:
+  types:
+    residential: Residential
+    commercial: Commercial
+    parking: Parking
+
+  statuses:
+    active: Active
+    inactive: Inactive
+    maintenance: Maintenance
+
+invoice:
+  statuses:
+    pending: Pending
+    paid: Paid
+    overdue: Overdue
+    partial: Partial
+    canceled: Canceled
+
+communication:
+  channels:
+    email: Email
+    sms: SMS
+    whatsapp: WhatsApp
+    push_notification: Push Notification
+
+  statuses:
+    pending: Pending
+    sent: Sent
+    failed: Failed
+    read: Read

@@ -1,0 +1,26 @@
+condominium:
+  name: Condomínio
+  cnpj: CNPJ
+  address: Endereço
+
+unit:
+  name: Unidade
+  block: Bloco
+  number: Número
+  type: Tipo
+  area: Área
+  fraction: Fração Ideal
+
+invoice:
+  name: Fatura
+  reference: Referência
+  total_amount: Valor Total
+  total_paid: Valor Pago
+  status: Status
+
+communication:
+  name: Comunicação
+  channel: Canal
+  recipient: Destinatário
+  subject: Assunto
+  status: Status

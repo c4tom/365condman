@@ -1,30 +1,34 @@
 <?php
 /**
- * Autoload simples para classes do plugin
+ * Autoload complementar para classes do plugin
  */
 
-spl_autoload_register( function( $class ) {
+// Carregar o autoloader do Composer
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+
+// Opcional: Registrar qualquer autoloader personalizado adicional
+spl_autoload_register(function($class) {
     // Namespace base do plugin
     $prefix = 'CondMan\\';
-    $base_dir = __DIR__ . '/';
+    $base_dir = dirname(__DIR__) . '/';
 
     // Verificar se a classe pertence ao namespace do plugin
-    $len = strlen( $prefix );
-    if ( strncmp( $prefix, $class, $len ) !== 0 ) {
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
         return;
     }
 
     // Remover o prefixo do namespace
-    $relative_class = substr( $class, $len );
+    $relative_class = substr($class, $len);
 
     // Substituir separadores de namespace por separadores de diretório
-    $path = str_replace( '\\', '/', $relative_class );
+    $path = str_replace('\\', '/', $relative_class);
 
-    // Construir o caminho completo do arquivo
-    $file = $base_dir . strtolower( str_replace( 'Core\\', '', $path ) ) . '.php';
+    // Caminho completo para o arquivo de classe
+    $file = $base_dir . $path . '.php';
 
-    // Incluir o arquivo se existir
-    if ( file_exists( $file ) ) {
+    // Se o arquivo existir, incluí-lo
+    if (file_exists($file)) {
         require_once $file;
     }
 });

@@ -1,107 +1,114 @@
 <?php
+/**
+ * Classe principal do plugin 365 Cond Man
+ *
+ * @package CondMan\Core
+ */
+
 namespace CondMan\Core;
 
-defined('ABSPATH') or die('Acesso direto não permitido.');
+// Prevenir acesso direto ao arquivo
+defined( 'ABSPATH' ) || exit;
 
+/**
+ * Classe principal do plugin
+ */
 class Plugin {
-    private $version = '1.0.0';
+    /**
+     * Instância singleton da classe
+     *
+     * @var Plugin
+     */
+    private static $instance = null;
 
-    public function __construct() {
-        // Inicialização do plugin
+    /**
+     * Construtor privado para padrão singleton
+     */
+    private function __construct() {
+        $this->init_hooks();
     }
 
-    public function init() {
-        // Carregar textdomain para internacionalização
-        load_plugin_textdomain('365condman', false, dirname(plugin_basename(CONDMAN_PLUGIN_FILE)) . '/languages/');
-
-        // Registrar hooks e ações iniciais
-        $this->registerHooks();
+    /**
+     * Inicializar hooks do plugin
+     */
+    private function init_hooks() {
+        add_action( 'init', array( $this, 'register_post_types' ) );
+        add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
     }
 
-    private function registerHooks() {
-        // Adicionar hooks administrativos
-        add_action('admin_menu', [$this, 'addAdminMenu']);
+    /**
+     * Registrar tipos de post personalizados
+     */
+    public function register_post_types() {
+        // Exemplo: Registrar tipo de post para condomínios
+        register_post_type(
+            'condominium',
+            array(
+                'labels'             => array(
+                    'name'               => __( 'Condomínios', '365condman' ),
+                    'singular_name'      => __( 'Condomínio', '365condman' ),
+                    'add_new'            => __( 'Adicionar Novo', '365condman' ),
+                    'add_new_item'       => __( 'Adicionar Novo Condomínio', '365condman' ),
+                    'edit_item'          => __( 'Editar Condomínio', '365condman' ),
+                ),
+                'public'             => true,
+                'publicly_queryable' => true,
+                'show_ui'            => true,
+                'show_in_menu'       => true,
+                'query_var'          => true,
+                'rewrite'            => array( 'slug' => 'condominium' ),
+                'capability_type'    => 'post',
+                'has_archive'        => true,
+                'hierarchical'       => false,
+                'menu_position'      => null,
+                'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ),
+            )
+        );
     }
 
-    public function addAdminMenu() {
-        // Adicionar menu administrativo inicial
+    /**
+     * Registrar menu administrativo
+     */
+    public function register_admin_menu() {
         add_menu_page(
-            '365 Cond Man', 
-            '365 Cond Man', 
-            'manage_options', 
-            '365condman', 
-            [$this, 'renderAdminPage'],
+            __( '365 Cond Man', '365condman' ),
+            __( '365 Cond Man', '365condman' ),
+            'manage_options',
+            '365condman',
+            array( $this, 'render_admin_page' ),
             'dashicons-building',
             20
         );
     }
 
-    public function renderAdminPage() {
-        // Renderizar página administrativa inicial
-        echo '<div class="wrap">';
-        echo '<h1>365 Cond Man</h1>';
-        echo '<p>Sistema de Gestão Condominial</p>';
-        echo '</div>';
+    /**
+     * Renderizar página administrativa
+     */
+    public function render_admin_page() {
+        // Renderizar template da página administrativa
+        include_once CONDMAN_PLUGIN_DIR . 'admin/views/dashboard.php';
     }
 
-    public function getVersion() {
-        return $this->version;
+    /**
+     * Método de execução do plugin
+     */
+    public function run() {
+        // Carregar textdomain para internacionalização
+        load_plugin_textdomain( '365condman', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+
+        // Registrar hooks de admin e public
+        $this->init_hooks();
     }
 
-    public function activate() {
-        // Verificar requisitos mínimos
-        $this->checkRequirements();
-
-        // Tarefas de ativação
-        $this->createInitialDatabaseTables();
-    }
-
-    private function checkRequirements() {
-        $php_version = '8.0';
-        $wp_version  = '6.4';
-
-        if (version_compare(PHP_VERSION, $php_version, '<')) {
-            deactivate_plugins(plugin_basename(CONDMAN_PLUGIN_FILE));
-            wp_die(
-                sprintf(
-                    __('Este plugin requer PHP versão %1$s ou superior. Sua versão atual é %2$s.', '365condman'),
-                    $php_version,
-                    PHP_VERSION
-                )
-            );
+    /**
+     * Método para obter a instância singleton
+     *
+     * @return Plugin
+     */
+    public static function get_instance() {
+        if ( null === self::$instance ) {
+            self::$instance = new self();
         }
-
-        if (version_compare($GLOBALS['wp_version'], $wp_version, '<')) {
-            deactivate_plugins(plugin_basename(CONDMAN_PLUGIN_FILE));
-            wp_die(
-                sprintf(
-                    __('Este plugin requer WordPress versão %1$s ou superior. Sua versão atual é %2$s.', '365condman'),
-                    $wp_version,
-                    $GLOBALS['wp_version']
-                )
-            );
-        }
-    }
-
-    private function createInitialDatabaseTables() {
-        global $wpdb;
-
-        // Exemplo de criação de tabela inicial
-        $table_name = $wpdb->prefix . 'condman_initial';
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $sql = "CREATE TABLE $table_name (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY  (id)
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-    }
-
-    public function deactivate() {
-        // Tarefas de desativação
-        // Por exemplo, limpar opções, remover tabelas temporárias
+        return self::$instance;
     }
 }

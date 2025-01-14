@@ -1,43 +1,81 @@
 <?php
 /**
  * Plugin Name: 365 Cond Man
- * Plugin URI: https://github.com/c4tom/365condman
- * Description: Sistema de Gestão Condominial
- * Version: 1.0.0
- * Author: Candido Tominaga
- * Author URI: https://github.com/c4tom/365condman
+ * Plugin URI: https://github.com/seu-usuario/365condman
+ * Description: Sistema de Gestão de Condomínio
+ * Version: 0.1.0
+ * Author: Sua Equipe
+ * Author URI: https://github.com/seu-usuario
  * Text Domain: 365condman
- * License: GPL-2.0+
- * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ * 
+ * @package CondMan
  */
 
-// Prevenir acesso direto
-defined('ABSPATH') or die('Acesso direto não permitido.');
+// Previne acesso direto ao arquivo
+if (!defined('WPINC')) {
+    die;
+}
 
-// Definir constante do arquivo do plugin
-define('CONDMAN_PLUGIN_FILE', __FILE__);
+// Define o diretório do plugin
+if (!defined('CONDMAN_PLUGIN_DIR')) {
+    define('CONDMAN_PLUGIN_DIR', plugin_dir_path(__FILE__));
+}
 
-// Incluir autoload do Composer
-require_once __DIR__ . '/vendor/autoload.php';
+if (!defined('CONDMAN_PLUGIN_URL')) {
+    define('CONDMAN_PLUGIN_URL', plugin_dir_url(__FILE__));
+}
 
-use CondMan\Core\Plugin;
+// Configura o modo de depuração se não estiver definido
+if (!defined('WP_DEBUG')) {
+    define('WP_DEBUG', false);
+}
 
-// Inicializar o plugin
+// Carrega o autoloader do Composer
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
+// Autoloader personalizado para classes do plugin
+spl_autoload_register(function ($class) {
+    // Verifica se a classe pertence ao namespace do plugin
+    $prefix = 'CondMan\\';
+    $base_dir = __DIR__ . '/src/';
+
+    // Verifica se a classe usa o prefixo do namespace
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+
+    // Remove o prefixo do namespace
+    $relative_class = substr($class, $len);
+
+    // Substitui os separadores de namespace por separadores de diretório
+    $path = str_replace('\\', '/', $relative_class);
+
+    // Monta o caminho completo do arquivo
+    $file = $base_dir . $path . '.php';
+
+    // Se o arquivo existir, inclui
+    if (file_exists($file)) {
+        require_once $file;
+    }
+});
+
+// Inicializa o plugin
+function activate_365condman() {
+    \CondMan\Core\Activator::activate();
+}
+register_activation_hook(__FILE__, 'activate_365condman');
+
+function deactivate_365condman() {
+    \CondMan\Core\Deactivator::deactivate();
+}
+register_deactivation_hook(__FILE__, 'deactivate_365condman');
+
+// Inicializa os componentes principais do plugin
 function condman_init() {
-    $plugin = new Plugin();
-    $plugin->init();
+    $plugin = new \CondMan\Core\Plugin();
+    $plugin->run();
 }
 add_action('plugins_loaded', 'condman_init');
-
-// Registrar ativação e desativação
-function condman_activate() {
-    $plugin = new Plugin();
-    $plugin->activate();
-}
-register_activation_hook(__FILE__, 'condman_activate');
-
-function condman_deactivate() {
-    $plugin = new Plugin();
-    $plugin->deactivate();
-}
-register_deactivation_hook(__FILE__, 'condman_deactivate');

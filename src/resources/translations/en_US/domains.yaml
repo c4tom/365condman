@@ -1,0 +1,26 @@
+condominium:
+  name: Condominium
+  cnpj: Corporate Tax ID
+  address: Address
+
+unit:
+  name: Unit
+  block: Block
+  number: Number
+  type: Type
+  area: Area
+  fraction: Ideal Fraction
+
+invoice:
+  name: Invoice
+  reference: Reference
+  total_amount: Total Amount
+  total_paid: Total Paid
+  status: Status
+
+communication:
+  name: Communication
+  channel: Channel
+  recipient: Recipient
+  subject: Subject
+  status: Status

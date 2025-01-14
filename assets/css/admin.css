@@ -1,0 +1,52 @@
+/* Estilos para página administrativa */
+.wrap .card {
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.dashboard-widgets {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dashboard-widget {
+    width: 48%;
+    background: #f8f9fb;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.dashboard-widget h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #e2e4e7;
+    padding-bottom: 10px;
+}
+
+.dashboard-widget ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dashboard-widget ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #e2e4e7;
+}
+
+.dashboard-widget ul li:last-child {
+    border-bottom: none;
+}
+
+/* Responsividade */
+@media screen and (max-width: 782px) {
+    .dashboard-widgets {
+        flex-direction: column;
+    }
+
+    .dashboard-widget {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}

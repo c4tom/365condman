@@ -1,0 +1,26 @@
+condominium:
+  name: Condominio
+  cnpj: Identificación Fiscal
+  address: Dirección
+
+unit:
+  name: Unidad
+  block: Bloque
+  number: Número
+  type: Tipo
+  area: Área
+  fraction: Fracción Ideal
+
+invoice:
+  name: Factura
+  reference: Referencia
+  total_amount: Importe Total
+  total_paid: Total Pagado
+  status: Estado
+
+communication:
+  name: Comunicación
+  channel: Canal
+  recipient: Destinatario
+  subject: Asunto
+  status: Estado

@@ -1,0 +1,15 @@
+validation:
+  required: "%field% é obrigatório"
+  invalid: "%field% é inválido"
+  too_short: "%field% deve ter no mínimo %min% caracteres"
+  too_long: "%field% deve ter no máximo %max% caracteres"
+
+errors:
+  not_found: "%entity% não encontrado(a)"
+  already_exists: "%entity% já existe"
+  invalid_data: "Dados inválidos para %entity%"
+
+success:
+  created: "%entity% criado(a) com sucesso"
+  updated: "%entity% atualizado(a) com sucesso"
+  deleted: "%entity% removido(a) com sucesso"
